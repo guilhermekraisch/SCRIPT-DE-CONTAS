@@ -2,240 +2,230 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GuigoBlox | Filtrador de Contas</title>
-
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #eaf6ff;
+      background: #f0faff;
       margin: 0;
       padding: 0;
-    }
+    } 
 
     header {
       background: linear-gradient(to right, #00cc44, #0077ff);
-      padding: 15px;
+      padding: 20px;
       color: white;
       text-align: center;
     }
 
     header img {
-      max-height: 60px;
-      width: auto;
+      max-height: 80px;
     }
 
     .container {
-      width: 95%;
       max-width: 900px;
-      margin: 15px auto;
-      padding: 15px;
+      margin: 30px auto;
+      padding: 20px;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      box-sizing: border-box;
-    }
-
-    h1 {
-      margin-top: 8px;
-      font-size: 1.4rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
       color: #0077ff;
-      margin-bottom: 12px;
-      font-size: 1.2rem;
+      margin-bottom: 15px;
     }
 
     textarea {
       width: 100%;
-      height: 180px;
-      padding: 12px;
+      height: 200px;
+      padding: 15px;
       font-size: 15px;
       border: 2px solid #d1d1d1;
       border-radius: 8px;
-      box-sizing: border-box;
       resize: vertical;
+      box-sizing: border-box;
     }
 
     .buttons {
-      margin-top: 12px;
+      margin-top: 15px;
       display: flex;
-      flex-direction: column;
       gap: 10px;
+      align-items: center;
     }
 
     button {
-      width: 100%;
-      padding: 14px;
+      flex: 1;
+      padding: 12px;
       font-size: 16px;
       border: none;
       border-radius: 8px;
-      color: white;
       cursor: pointer;
-      transition: 0.25s;
+      transition: 0.3s ease;
     }
 
     #filterBtn {
       background: #00cc44;
-    }
-    #filterBtn:hover {
-      background: #00a337;
+      color: white;
     }
 
-    #copyBtn {
-      background: linear-gradient(90deg, #00cc44, #0077ff);
-    }
-    #copyBtn:hover {
-      filter: brightness(0.9);
+    #filterBtn:hover {
+      background: #009933;
     }
 
     #clearBtn {
       background: #0077ff;
-    }
-    #clearBtn:hover {
-      background: #005bcc;
+      color: white;
     }
 
-    .small {
-      margin-top: 5px;
-      font-size: 13px;
-      color: #666;
+    #clearBtn:hover {
+      background: #0055cc;
+    }
+
+    #copyBtn {
+      background: linear-gradient(90deg, #00cc44, #0077ff);
+      color: white;
+    }
+
+    #copyBtn:hover {
+      filter: brightness(0.95);
     }
 
     pre {
       background: #f4f4f4;
       padding: 15px;
       border-radius: 8px;
-      font-size: 15px;
-      border: 1px solid #ccc;
-      min-height: 80px;
+      margin-top: 20px;
       white-space: pre-wrap;
       word-wrap: break-word;
+      border: 1px solid #ccc;
+      min-height: 80px;
     }
 
-    /* 🔥 Ajustes para telas MUITO pequenas */
-    @media (max-width: 400px) {
-      h1 { font-size: 1.2rem; }
-      h2 { font-size: 1.1rem; }
-      textarea { height: 150px; font-size: 14px; }
-      button { font-size: 15px; padding: 12px; }
-      pre { font-size: 14px; }
+    .small {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <img src="logo completa guigo.png" alt="GuigoBlox Logo">
-  <h1>Filtrador de Contas Roblox</h1>
-</header>
+  <header>
+    <img src="logo completa guigo.png" alt="GuigoBlox Logo">
+    <h1>Filtrador de Contas Roblox</h1>
+  </header>
 
-<div class="container">
-  <h2>Insira suas contas abaixo:</h2>
-  <textarea id="input" placeholder="Cole aqui as contas com cookies..."></textarea>
+  <div class="container">
+    <h2>Insira suas contas abaixo:</h2>
+    <textarea id="input" placeholder="Cole aqui as contas com cookies..."></textarea>
 
-  <div class="buttons">
-    <button id="filterBtn" onclick="filtrarContas()">🔍 Filtrar Contas</button>
-    <button id="copyBtn" onclick="copiarTudo()">📋 Copiar Tudo</button>
-    <button id="clearBtn" onclick="limparCampos()">🧹 Limpar</button>
+    <div class="buttons">
+      <button id="filterBtn" onclick="filtrarContas()">🔍 Filtrar Contas</button>
+      <button id="copyBtn" onclick="copiarTudo()">📋 Copiar Tudo</button>
+      <button id="clearBtn" onclick="limparCampos()">🧹 Limpar</button>
+    </div>
+
+    <div class="small">Dica: o botão "Copiar Tudo" copia o resultado filtrado. Se não houver resultado, ele copia o que está no campo de entrada.</div>
+
+    <h2>Resultado:</h2>
+    <pre id="output"></pre>
   </div>
 
-  <div class="small">
-    Dica: o botão "Copiar Tudo" copia o resultado filtrado. Se não houver resultado, ele copia o que está no campo de entrada.
-  </div>
+  <script>
+    function filtrarContas() {
+      const input = document.getElementById('input').value;
+      const linhas = input.split('\n');
+      const resultado = [];
 
-  <h2>Resultado:</h2>
-  <pre id="output"></pre>
-</div>
+      linhas.forEach(linha => {
+        // aceita formatos user:pass e user/pass e variações simples
+        const matchDoisPontos = linha.match(/^([^:\/\s]+):([^:\/\s]+):?_?/);
+        const matchBarra = linha.match(/^([^:\/\s]+)\/([^:\/\s]+)\/?/);
 
-<script>
+        let usuario = '', senha = '';
 
-function filtrarContas() {
-  const input = document.getElementById('input').value;
-  const linhas = input.split('\n');
-  const resultado = [];
+        if (matchDoisPontos) {
+          usuario = matchDoisPontos[1];
+          senha = matchDoisPontos[2];
+        } else if (matchBarra) {
+          usuario = matchBarra[1];
+          senha = matchBarra[2];
+        }
 
-  linhas.forEach(linha => {
-    const matchDoisPontos = linha.match(/^([^:\/\s]+):([^:\/\s]+)/);
-    const matchBarra = linha.match(/^([^:\/\s]+)\/([^:\/\s]+)/);
+        if (usuario && senha) {
+          resultado.push(`NOME: ${usuario} SENHA: ${senha}`);
+        }
+      });
 
-    let usuario = '', senha = '';
-
-    if (matchDoisPontos) {
-      usuario = matchDoisPontos[1];
-      senha = matchDoisPontos[2];
-    } else if (matchBarra) {
-      usuario = matchBarra[1];
-      senha = matchBarra[2];
+      document.getElementById('output').textContent = resultado.join('\n');
     }
 
-    if (usuario && senha) {
-      resultado.push(`NOME: ${usuario}  SENHA: ${senha}`);
+    function limparCampos() {
+      document.getElementById('input').value = '';
+      document.getElementById('output').textContent = '';
+      // Restaurar texto do botão de cópia caso esteja alterado
+      const cb = document.getElementById('copyBtn');
+      if (cb) cb.textContent = '📋 Copiar Tudo';
     }
-  });
 
-  document.getElementById('output').textContent = resultado.join('\n');
-}
+    async function copiarTextoParaAreaTransferencia(texto) {
+      // tenta usar Clipboard API, senão fallback para textarea temporária
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(texto);
+          return true;
+        } catch (e) {
+          // se falhar, vamos para fallback
+        }
+      }
 
-function limparCampos() {
-  document.getElementById('input').value = '';
-  document.getElementById('output').textContent = '';
-  document.getElementById('copyBtn').textContent = '📋 Copiar Tudo';
-}
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      // evitar flash na tela
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        return true;
+      } catch (e) {
+        document.body.removeChild(ta);
+        return false;
+      }
+    }
 
-async function copiarTextoParaAreaTransferencia(texto) {
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    try {
-      await navigator.clipboard.writeText(texto);
-      return true;
-    } catch (e) {}
-  }
+    async function copiarTudo() {
+      const outputEl = document.getElementById('output');
+      const inputEl = document.getElementById('input');
+      const copyBtn = document.getElementById('copyBtn');
 
-  const ta = document.createElement('textarea');
-  ta.value = texto;
-  ta.style.position = 'fixed';
-  ta.style.left = '-9999px';
-  document.body.appendChild(ta);
-  ta.select();
+      let textoParaCopiar = outputEl.textContent.trim();
+      if (!textoParaCopiar) {
+        textoParaCopiar = inputEl.value.trim();
+      }
 
-  try {
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    return true;
-  } catch (e) {
-    document.body.removeChild(ta);
-    return false;
-  }
-}
+      if (!textoParaCopiar) {
+        // nada pra copiar
+        copyBtn.textContent = 'Nada pra copiar';
+        setTimeout(() => copyBtn.textContent = '📋 Copiar Tudo', 1500);
+        return;
+      }
 
-async function copiarTudo() {
-  const outputEl = document.getElementById('output');
-  const inputEl = document.getElementById('input');
-  const copyBtn = document.getElementById('copyBtn');
-
-  let textoParaCopiar = outputEl.textContent.trim();
-  if (!textoParaCopiar) textoParaCopiar = inputEl.value.trim();
-
-  if (!textoParaCopiar) {
-    copyBtn.textContent = 'Nada pra copiar';
-    setTimeout(() => copyBtn.textContent = '📋 Copiar Tudo', 1500);
-    return;
-  }
-
-  const ok = await copiarTextoParaAreaTransferencia(textoParaCopiar);
-
-  if (ok) {
-    copyBtn.textContent = 'Copiado!';
-    setTimeout(() => copyBtn.textContent = '📋 Copiar Tudo', 2000);
-  } else {
-    copyBtn.textContent = 'Erro ao copiar';
-    setTimeout(() => copyBtn.textContent = '📋 Copiar Tudo', 2000);
-  }
-}
-
-</script>
-
+      const ok = await copiarTextoParaAreaTransferencia(textoParaCopiar);
+      if (ok) {
+        const original = copyBtn.textContent;
+        copyBtn.textContent = 'Copiado!';
+        setTimeout(() => copyBtn.textContent = original || '📋 Copiar Tudo', 2000);
+      } else {
+        // falha ao copiar
+        copyBtn.textContent = 'Erro ao copiar';
+        setTimeout(() => copyBtn.textContent = '📋 Copiar Tudo', 2000);
+      }
+    }
+  </script>
 </body>
 </html>
